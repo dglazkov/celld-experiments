@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "celld-chat",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-01-01",
+
+  // The Vite build output. celld serves these directly and only falls through
+  // to the Worker for /api/* routes.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+
+  // One cell per chat room.
+  "durable_objects": {
+    "bindings": [{ "name": "ROOM", "class_name": "Room" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+
+  "vars": {
+    // Each fleet node overrides this with CELLD_VAR_NODE_LABEL so the UI can
+    // show which node served the request and which node owns the room.
+    "NODE_LABEL": "local"
+  }
+}
